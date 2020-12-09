@@ -8,12 +8,13 @@ SqlBookModel::SqlBookModel(QObject *parent) : QSqlRelationalTableModel (parent)
 {
     setTable("Books");
     setEditStrategy(QSqlTableModel::OnManualSubmit);
+    setSort(1, Qt::AscendingOrder);
 
     //setRelation(2, QSqlRelation("Authors", "id", "name"));
     //setRelation(3, QSqlRelation("Categories", "id", "name"));
 
     QSqlQuery query;
-    if (!query.exec("SELECT * FROM Books"))
+    if (!query.exec("SELECT * FROM Books ORDER BY Books.title"))
         qFatal("Books SELECT query failed: %s", qPrintable(query.lastError().text()));
 
     setQuery(query);
@@ -77,7 +78,6 @@ bool SqlBookModel::doCreate(const QString &isbn, const QString &title, const QSt
 
     if (!submitAll())
     {
-        qDebug() << lastError();
         removeRow(rowCount() - 1);
         return false;
     }
@@ -85,26 +85,22 @@ bool SqlBookModel::doCreate(const QString &isbn, const QString &title, const QSt
     return true;
 }
 
-bool SqlBookModel::doUpdate(int currentBook, const QString &isbn, const QString &title, const QString &author, const QString &category)
+bool SqlBookModel::doUpdate(int currentBook, const QString &title, const QString &author, const QString &category)
 {
-    qDebug() << "update " << currentBook;
-    if (isbn.length() != 10) {
+    QSqlQuery q;
+    q.prepare(QLatin1String("update books"
+                            " set title=?, author=?, category=?"
+                            " where books.isbn=?"));
+    q.addBindValue(title);
+    q.addBindValue(author);
+    q.addBindValue(category);
+    q.addBindValue(record(currentBook).value("isbn"));
+    if (!q.exec())
+    {
         return false;
     }
-
-    QSqlRecord newRecord = record();
-    newRecord.setValue("isbn", isbn);
-    newRecord.setValue("title", title);
-    newRecord.setValue("author", author);
-    newRecord.setValue("category", category);
-    if (!insertRecord(rowCount(), newRecord)) {
-        return false;
-    }
-
     if (!submitAll())
     {
-        qDebug() << lastError();
-        removeRow(rowCount() - 1);
         return false;
     }
 
@@ -113,7 +109,16 @@ bool SqlBookModel::doUpdate(int currentBook, const QString &isbn, const QString 
 
 bool SqlBookModel::doDelete(int currentBook)
 {
-    qDebug() << "delete " << currentBook;
-    select();
+    QSqlQuery q;
+    q.prepare(QLatin1String("delete from books where books.isbn=?"));
+    q.addBindValue(record(currentBook).value("isbn"));
+    if (!q.exec())
+    {
+        return false;
+    }
+    if (!submitAll())
+    {
+        return false;
+    }
     return true;
 }

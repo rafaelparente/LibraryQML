@@ -58,7 +58,7 @@ Page {
             if (currentBook === -1)
                 listView.model.doCreate(isbn, title, author, category)
             else
-                listView.model.doUpdate(currentBook, isbn, title, author, category)
+                listView.model.doUpdate(currentBook, title, author, category)
         }
     }
 

@@ -18,6 +18,7 @@ Dialog {
 
     function editBook(book) {
         form.isbn.text = book.isbn;
+        form.isbn.enabled = false;
         form.title.text = book.title;
         form.author.text = book.author;
         form.category.text = book.category;
