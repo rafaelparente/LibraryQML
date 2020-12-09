@@ -8,6 +8,7 @@ Dialog {
 
     function createBook() {
         form.isbn.clear();
+        form.isbn.enabled = true;
         form.title.clear();
         form.author.clear();
         form.category.clear();

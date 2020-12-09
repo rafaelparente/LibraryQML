@@ -45,12 +45,12 @@ QSqlError initDb()
     QStringList tables = db.tables();
     if (!tables.contains("authors", Qt::CaseInsensitive))
     {
-        if (!q.exec(QLatin1String("create table authors(id serial primary key, name varchar not null)")))
+        if (!q.exec(QLatin1String("create table authors(id serial primary key, name varchar not null unique)")))
             return q.lastError();
     }
     if (!tables.contains("categories", Qt::CaseInsensitive))
     {
-        if (!q.exec(QLatin1String("create table categories(id serial primary key, name varchar not null)")))
+        if (!q.exec(QLatin1String("create table categories(id serial primary key, name varchar not null unique)")))
             return q.lastError();
     }
     if (!tables.contains("books", Qt::CaseInsensitive))

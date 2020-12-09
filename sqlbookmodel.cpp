@@ -88,9 +88,9 @@ bool SqlBookModel::doCreate(const QString &isbn, const QString &title, const QSt
 bool SqlBookModel::doUpdate(int currentBook, const QString &title, const QString &author, const QString &category)
 {
     QSqlQuery q;
-    q.prepare(QLatin1String("update books"
-                            " set title=?, author=?, category=?"
-                            " where books.isbn=?"));
+    q.prepare(QLatin1String("UPDATE Books"
+                            " SET title=?, author=?, category=?"
+                            " WHERE Books.isbn=?"));
     q.addBindValue(title);
     q.addBindValue(author);
     q.addBindValue(category);
@@ -110,7 +110,7 @@ bool SqlBookModel::doUpdate(int currentBook, const QString &title, const QString
 bool SqlBookModel::doDelete(int currentBook)
 {
     QSqlQuery q;
-    q.prepare(QLatin1String("delete from books where books.isbn=?"));
+    q.prepare(QLatin1String("DELETE FROM Books WHERE Books.isbn=?"));
     q.addBindValue(record(currentBook).value("isbn"));
     if (!q.exec())
     {
