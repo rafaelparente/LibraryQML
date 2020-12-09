@@ -1,20 +1,30 @@
 #ifndef SQLBOOKMODEL_H
 #define SQLBOOKMODEL_H
 
-#include <QSqlTableModel>
+#include <QSqlRelationalTableModel>
 
 
-class SqlBookModel : public QSqlTableModel
+class SqlBookModel : public QSqlRelationalTableModel
 {
     Q_OBJECT
+    Q_PROPERTY(QString isbn READ isbn WRITE setIsbn NOTIFY isbnChanged)
 
 public:
     SqlBookModel(QObject *parent = nullptr);
 
+    QString isbn() const;
+    void setIsbn(const QString &isbn);
+
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE void saveDetails(const QMap<QString, QString> &details);
+    Q_INVOKABLE void saveDetails(const QString &isbn, const QString &title, const QString &author, const QString &category);
+
+signals:
+    void isbnChanged();
+
+private:
+    QString m_isbn;
 };
 
 #endif // SQLBOOKMODEL_H

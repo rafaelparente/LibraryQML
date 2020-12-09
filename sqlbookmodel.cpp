@@ -50,19 +50,42 @@ static void createTable()
     addBook(q, "2392428346", QLatin1String("Foundation and Earth"), pratchettId, sfiction);
 }
 
-SqlBookModel::SqlBookModel(QObject *parent) : QSqlTableModel (parent)
+SqlBookModel::SqlBookModel(QObject *parent) : QSqlRelationalTableModel (parent)
 {
     createTable();
     setTable(booksTableName);
     setEditStrategy(QSqlTableModel::OnManualSubmit);
 
+    setRelation(2, QSqlRelation("Authors", "id", "name"));
+    setRelation(3, QSqlRelation("Categories", "id", "name"));
+
     QSqlQuery query;
     if (!query.exec("SELECT * FROM Books"))
         qFatal("Books SELECT query failed: %s", qPrintable(query.lastError().text()));
 
-    setQuery(query);
+    //setQuery(query);
     if (lastError().isValid())
         qFatal("Cannot set query on SqlBookModel: %s", qPrintable(lastError().text()));
+}
+
+QString SqlBookModel::isbn() const
+{
+    return m_isbn;
+}
+
+void SqlBookModel::setIsbn(const QString &isbn)
+{
+    if (isbn == m_isbn)
+        return;
+
+    m_isbn = isbn;
+
+    const QString filterString = QString::fromLatin1(
+        "(isbn='%1')").arg(m_isbn);
+    setFilter(filterString);
+    select();
+
+    emit isbnChanged();
 }
 
 QVariant SqlBookModel::data(const QModelIndex &index, int role) const
@@ -84,16 +107,19 @@ QHash<int, QByteArray> SqlBookModel::roleNames() const
     return names;
 }
 
-void SqlBookModel::saveDetails(const QMap<QString, QString> &details)
+void SqlBookModel::saveDetails(const QString &isbn, const QString &title, const QString &author, const QString &category)
 {
     QSqlRecord newRecord = record();
-    newRecord.setValue("isbn", details["isbn"]);
-    newRecord.setValue("title", details["title"]);
-    newRecord.setValue("author", details["author"].toInt());
-    newRecord.setValue("category", details["category"].toInt());
+    newRecord.setValue("isbn", isbn);
+    newRecord.setValue("title", title);
+    newRecord.setValue("author", author);
+    newRecord.setValue("category", category);
     if (!insertRecord(rowCount(), newRecord)) {
         return;
     }
 
-    submitAll();
+    if (!submitAll())
+    {
+        qDebug() << lastError();
+    }
 }

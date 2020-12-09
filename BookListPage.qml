@@ -28,7 +28,12 @@ Page {
             width: ListView.view.width - ListView.view.leftMargin - ListView.view.rightMargin
             height: avatar.implicitHeight
             leftPadding: avatar.implicitWidth + 32
-            onClicked: root.StackView.view.push("qrc:/BookPage.qml", { book: model })
+            onClicked: root.StackView.view.push("qrc:/BookPage.qml", {
+                                                    bookIsbn: model.isbn,
+                                                    bookTitle: model.title,
+                                                    bookAuthor: model.author,
+                                                    bookCategory: model.category,
+                                                })
 
             Label {
                 id: avatar
