@@ -28,3 +28,5 @@ HEADERS += \
     sqlbookmodel.h
 
 LIBS += -L"$$PWD/libs/pgsql/bin"
+
+DISTFILES +=

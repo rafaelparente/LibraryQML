@@ -18,7 +18,9 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE void saveDetails(const QString &isbn, const QString &title, const QString &author, const QString &category);
+    Q_INVOKABLE bool doCreate(const QString &isbn, const QString &title, const QString &author, const QString &category);
+    Q_INVOKABLE bool doUpdate(int currentBook, const QString &isbn, const QString &title, const QString &author, const QString &category);
+    Q_INVOKABLE bool doDelete(int currentBook);
 
 signals:
     void isbnChanged();

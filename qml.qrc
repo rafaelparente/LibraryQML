@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>BookListPage.qml</file>
-        <file>BookPage.qml</file>
+        <file>BookForm.qml</file>
+        <file>BookDialog.qml</file>
+        <file>BookList.qml</file>
     </qresource>
 </RCC>
