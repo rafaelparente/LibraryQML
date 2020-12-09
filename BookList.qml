@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
 
 import library.sqlbookmodel 1.0
 
@@ -9,10 +10,25 @@ Page {
     property int currentBook: -1
 
     header: ToolBar {
-        Label {
-            text: qsTr("Livros")
-            font.pixelSize: 20
-            anchors.centerIn: parent
+        RowLayout {
+            width: parent.width
+
+            TextArea {
+                id: searchField
+                Layout.fillWidth: true
+                placeholderText: qsTr("Buscar por...")
+                wrapMode: TextArea.Wrap
+            }
+
+            Button {
+                id: searchButton
+                text: qsTr("Buscar")
+                enabled: searchField.length > 0
+                onClicked: {
+                    listView.model.doSearch(searchField.text);
+                    searchField.text = "";
+                }
+            }
         }
     }
 

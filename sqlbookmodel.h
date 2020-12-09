@@ -21,6 +21,7 @@ public:
     Q_INVOKABLE bool doCreate(const QString &isbn, const QString &title, const QString &author, const QString &category);
     Q_INVOKABLE bool doUpdate(int currentBook, const QString &title, const QString &author, const QString &category);
     Q_INVOKABLE bool doDelete(int currentBook);
+    Q_INVOKABLE bool doSearch(const QString &text);
 
 signals:
     void isbnChanged();

@@ -122,3 +122,9 @@ bool SqlBookModel::doDelete(int currentBook)
     }
     return true;
 }
+
+bool SqlBookModel::doSearch(const QString &text)
+{
+    qDebug() << text;
+    return true;
+}
